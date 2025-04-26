@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>دخول المزرعة - د. أحمد خالد</title>
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        #dr-toggle {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            font-size: 26px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            z-index: 9999;
+            transition: transform 0.2s;
+        }
+
+        #dr-toggle:hover {
+            transform: translateX(-50%) scale(1.1);
+        }
+
+        #dr-panel {
+            display: none;
+            animation: fadeIn 0.3s ease;
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #f0fff0;
+            border: 2px solid #4CAF50;
+            border-radius: 12px;
+            padding: 20px;
+            width: 360px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            font-family: 'Cairo', sans-serif;
+            text-align: center;
+            z-index: 10000;
+        }
+
+        #dr-panel .dr-header {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2e7d32;
+            margin-bottom: 10px;
+        }
+
+        #dr-close {
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            background: none;
+            border: none;
+            color: #c00;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        select#farm-type {
+            padding: 8px;
+            font-size: 16px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            width: 90%;
+            margin-bottom: 10px;
+        }
+
+        input#signed-request-input {
+            width: 90%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 17px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- زر التبديل لعرض اللوحة -->
+    <button id="dr-toggle">🌾</button>
+
+    <!-- اللوحة المنبثقة -->
+    <div id="dr-panel">
+        <button id="dr-close" title="إغلاق">×</button>
+        <div class="dr-header">بواسطة د. أحمد خالد</div>
+        <div style="font-size:16px;line-height:1.6;">
+            اختر نوع المزرعة والصق <b>signed_request</b><br><br>
+            <select id="farm-type">
+                <option value="us">🌾 فاميلي</option>
+                <option value="th">🌸 هابي</option>
+                <option value="fr">🌟 سوبر فارم</option>
+            </select><br>
+            <input type="text" id="signed-request-input" placeholder="ألصق هنا..."><br><br>
+            <button id="switch-btn">🚀 دخول للمزرعة</button>
+        </div>
+    </div>
+
+    <script>
+        // إظهار أو إخفاء اللوحة
+        document.getElementById("dr-toggle").onclick = () => {
+            document.getElementById("dr-panel").style.display = document.getElementById("dr-panel").style.display === "block" ? "none" : "block";
+        };
+
+        // إغلاق اللوحة
+        document.getElementById("dr-close").onclick = () => {
+            document.getElementById("dr-panel").style.display = "none";
+        };
+
+        // دخول المزرعة بناءً على signed_request
+        document.getElementById("switch-btn").onclick = () => {
+            const sr = document.getElementById("signed-request-input").value.trim();
+            const type = document.getElementById("farm-type").value;
+
+            if (!sr) return alert("يرجى إدخال signed_request أولاً");
+
+            let actionUrl = "https://farm-us.centurygames.com";
+            if (type === "th") actionUrl = "https://farm-th.centurygames.com";
+            else if (type === "fr") actionUrl = "https://farm-fr.centurygames.com";
+
+            const form = document.createElement("form");
+            form.method = "POST";
+            form.action = actionUrl;
+            form.style.display = "none";
+
+            const input = document.createElement("input");
+            input.name = "signed_request";
+            input.value = sr;
+            form.appendChild(input);
+
+            document.body.appendChild(form);
+            form.submit();
+        };
+    </script>
+    
+</body>
+</html>
